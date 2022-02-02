@@ -2,6 +2,7 @@
   import Header from './components/Header.svelte';
   import GameBoard from './components/GameBoard.svelte';
   import Keyboard from './components/Keyboard.svelte';
+  import Toast, { ToastController } from './components/Toast.svelte';
   import { NUM_ROWS } from './resources/constants.js';
   import {
     validateGuess,
@@ -26,6 +27,9 @@
   $: numLetters, (board = [...Array(NUM_ROWS)].map(() => []));
   $: isGameOver = isGameOver || currentGuess >= NUM_ROWS;
   $: solution = getDailyPuzzle(numLetters);
+  $: if (currentGuess >= NUM_ROWS) {
+    ToastController.push(solution.toUpperCase(), { duration: 3000 });
+  }
 
   // handlers
   const addLetter = (letter) => {
@@ -45,8 +49,14 @@
   const submitGuess = () => {
     if (isGameOver) return;
     const guess = board[currentGuess];
-    if (guess.length < numLetters) return;
-    if (!isRealWord(guess)) return;
+    if (guess.length < numLetters) {
+      ToastController.push('Not enough letters!');
+      return;
+    }
+    if (!isRealWord(guess)) {
+      ToastController.push('Not in word list!');
+      return;
+    }
     validateGuess(guess, solution, guessedLetters);
     currentGuess += 1;
     board = board;
@@ -60,6 +70,7 @@
   <GameBoard {numLetters} {board} />
   <Keyboard {addLetter} {removeLetter} {submitGuess} {guessedLetters} />
 </div>
+<Toast />
 
 <style lang="scss">
   #game {
@@ -72,5 +83,6 @@
     align-items: center;
     min-height: 100vh;
     min-height: -webkit-fill-available;
+    overflow: hidden;
   }
 </style>
