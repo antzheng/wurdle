@@ -31,7 +31,7 @@
     width: 100%;
     max-width: var(--game-max-width);
     margin: 0 auto;
-    padding: 0px 25px;
+    padding: 0px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -48,7 +48,8 @@
   .menu {
     display: flex;
     align-items: center;
-    min-width: 100px;
+    min-width: 75px;
+    margin-top: 2px;
   }
 
   .title {
@@ -60,8 +61,10 @@
   }
 
   .button {
+    color: var(--color-tone-3);
     width: 30px;
     height: 30px;
     padding: 3px;
+    margin: 0 3px;
   }
 </style>
