@@ -43,6 +43,12 @@
   --modal-content-bg: var(--color-tone-7);
 }
 
+:root {
+  --toastBackground: var(--color-tone-1);
+  --toastBarBackground: var(--color-tone-2);
+  --toastColor: var(--color-tone-7);
+}
+
 .darkmode {
   --color-tone-1: #d7dadc;
   --color-tone-2: #818384;
@@ -66,6 +72,12 @@
   --key-bg-correct: var(--color-correct);
   --key-bg-absent: var(--color-absent);
   --modal-content-bg: var(--color-tone-7);
+}
+
+.darkmode {
+  --toastBackground: var(--color-tone-1);
+  --toastBarBackground: var(--color-tone-2);
+  --toastColor: var(--color-tone-7);
 }
 
 .highcontrast {
