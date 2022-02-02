@@ -49,6 +49,13 @@
   --toastColor: var(--color-tone-7);
 }
 
+:root {
+  --modalGreen: var(--green);
+  --modalYellow: var(--yellow);
+  --modalOrange: var(--orange);
+  --modalBlue: var(--blue);
+}
+
 .darkmode {
   --color-tone-1: #d7dadc;
   --color-tone-2: #818384;
@@ -87,6 +94,11 @@
   --key-bg-present: var(--color-present);
   --key-bg-correct: var(--color-correct);
   --key-bg-absent: var(--color-absent);
+}
+
+.darkmode {
+  --modalGreen: var(--darkendGreen);
+  --modalYellow: var(--darkendYellow);
 }
 
 :root,

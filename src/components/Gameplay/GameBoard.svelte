@@ -3,7 +3,11 @@
 </script>
 
 <div class="container">
-  <div class="game-board" style="--columns:{numLetters}">
+  <div
+    class="game-board"
+    class:square={numLetters === 6}
+    style="--columns:{numLetters}"
+  >
     {#each board as row}
       <div class="row">
         {#each row as tile}
@@ -46,6 +50,10 @@
 
     height: 100%;
     aspect-ratio: var(--columns) / 6;
+  }
+
+  .square {
+    height: min(100%, 90vmin);
   }
 
   .row {

@@ -2,17 +2,41 @@
   import HelpIcon from 'svelte-icons/io/IoMdHelpCircle.svelte';
   import StatsIcon from 'svelte-icons/io/IoMdStats.svelte';
   import SettingsIcon from 'svelte-icons/io/IoMdSettings.svelte';
+
+  import HowTo from './../Informational/HowTo.svelte';
+  import { PAGES } from './../../resources/constants';
+
+  import * as ModalController from './Modal.svelte';
+
+  const handleClick = (page) => {
+    ModalController.setOpen(true);
+    switch (page) {
+      case PAGES.HOWTO:
+        ModalController.setContent(HowTo);
+        break;
+      case PAGES.LEADERBOARD:
+        break;
+      case PAGES.SETTINGS:
+        break;
+    }
+  };
 </script>
 
 <header class="navbar">
   <div class="navbar-content">
     <div class="menu navbar-left">
-      <button class="button"><HelpIcon /></button>
+      <button class="button" on:click={() => handleClick(PAGES.HOWTO)}>
+        <HelpIcon />
+      </button>
     </div>
     <div class="title">WURDLE</div>
     <div class="menu navbar-right">
-      <button class="button"><StatsIcon /></button>
-      <button class="button"><SettingsIcon /></button>
+      <button class="button" on:click={() => handleClick(PAGES.LEADERBOARD)}>
+        <StatsIcon />
+      </button>
+      <button class="button" on:click={() => handleClick(PAGES.SETTINGS)}>
+        <SettingsIcon />
+      </button>
     </div>
   </div>
 </header>

@@ -6,6 +6,7 @@
   export let addLetter, removeLetter, submitGuess, guessedLetters;
 
   const handleKeydown = (event) => {
+    if (event.repeat) return;
     const key = event.key;
     const isLetter = key.length === 1 && key.match(/[a-z]/i);
     if (!isLetter && key !== 'Enter' && key !== 'Backspace') return;

@@ -1,8 +1,9 @@
 <script>
-  import Header from './components/Header.svelte';
-  import GameBoard from './components/GameBoard.svelte';
-  import Keyboard from './components/Keyboard.svelte';
-  import Toast, { ToastController } from './components/Toast.svelte';
+  import Header from './components/Generic/Header.svelte';
+  import GameBoard from './components/Gameplay/GameBoard.svelte';
+  import Keyboard from './components/Gameplay/Keyboard.svelte';
+  import Toast, { ToastController } from './components/Generic/Toast.svelte';
+  import Modal from './components/Generic/Modal.svelte';
   import { NUM_ROWS } from './resources/constants.js';
   import {
     validateGuess,
@@ -71,6 +72,7 @@
   <Keyboard {addLetter} {removeLetter} {submitGuess} {guessedLetters} />
 </div>
 <Toast />
+<Modal />
 
 <style lang="scss">
   #game {
