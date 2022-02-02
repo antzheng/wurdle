@@ -1,8 +1,12 @@
-import {
-  FOUR_LETTER_WORDS,
-  FIVE_LETTER_WORDS,
-  SIX_LETTER_WORDS,
-} from './constants';
+import { FOUR_LETTER_WORD_BANK, VALID_FOUR_LETTER_WORDS } from './4-letters';
+import { FIVE_LETTER_WORD_BANK, VALID_FIVE_LETTER_WORDS } from './5-letters';
+import { SIX_LETTER_WORD_BANK, VALID_SIX_LETTER_WORDS } from './6-letters';
+
+const mapping = {
+  4: [FOUR_LETTER_WORD_BANK, VALID_FOUR_LETTER_WORDS],
+  5: [FIVE_LETTER_WORD_BANK, VALID_FIVE_LETTER_WORDS],
+  6: [SIX_LETTER_WORD_BANK, VALID_SIX_LETTER_WORDS],
+};
 
 /**
  * return whether the guess is the answer
@@ -94,14 +98,8 @@ const getHourMinuteSecondEST = () => {
 export const getDailyPuzzle = (numLetters) => {
   const [month, day, year] = getMonthDayYearEST();
   const baseIndex = year * 365 + month * 31 + day;
-  switch (numLetters) {
-    case 4:
-      return FOUR_LETTER_WORDS[baseIndex % FOUR_LETTER_WORDS.length];
-    case 5:
-      return FIVE_LETTER_WORDS[baseIndex % FIVE_LETTER_WORDS.length];
-    case 6:
-      return SIX_LETTER_WORDS[baseIndex % SIX_LETTER_WORDS.length];
-  }
+  const [wordBank] = mapping[numLetters];
+  return wordBank[baseIndex % wordBank.length];
 };
 
 /**
@@ -112,12 +110,6 @@ export const getDailyPuzzle = (numLetters) => {
 export const isRealWord = (guess) => {
   const numLetters = guess.length;
   const word = guess.map((tile) => tile.letter).join('');
-  switch (numLetters) {
-    case 4:
-      return FOUR_LETTER_WORDS.includes(word);
-    case 5:
-      return FIVE_LETTER_WORDS.includes(word);
-    case 6:
-      return SIX_LETTER_WORDS.includes(word);
-  }
+  const [wordBank, validWords] = mapping[numLetters];
+  return wordBank.includes(word) || validWords.includes(word);
 };
