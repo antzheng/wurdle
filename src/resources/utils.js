@@ -1,3 +1,9 @@
+import {
+  FOUR_LETTER_WORDS,
+  FIVE_LETTER_WORDS,
+  SIX_LETTER_WORDS,
+} from './constants';
+
 /**
  * return whether the guess is the answer
  * @param { array of objects } guess
@@ -54,4 +60,64 @@ export const validateGuess = (guess, solution, guessedLetters) => {
       }
     }
   });
+};
+
+/**
+ * gets today's date in Eastern Time
+ * @returns returns array of numbers [month, day, year] in Eastern Time
+ */
+const getMonthDayYearEST = () => {
+  return new Date()
+    .toLocaleDateString('en-US', { timeZone: 'America/New_York' })
+    .split('/')
+    .map((num) => parseInt(num));
+};
+
+/**
+ * gets today's time in Eastern Time
+ * @returns returns array of numbers [hour, minute, second] in Eastern Time
+ */
+const getHourMinuteSecondEST = () => {
+  const [time, timeOfDay] = new Date()
+    .toLocaleTimeString('en-US', { timeZone: 'America/New_York' })
+    .split(' ');
+  let [hour, minute, second] = time.split(':').map((num) => parseInt(num));
+  if (timeOfDay === 'PM') hour += 12;
+  return [hour, minute, second];
+};
+
+/**
+ * gets daily puzzle based on desired number of letters
+ * @param { number } numLetters
+ * @returns daily puzzle
+ */
+export const getDailyPuzzle = (numLetters) => {
+  const [month, day, year] = getMonthDayYearEST();
+  const baseIndex = year * 365 + month * 31 + day;
+  switch (numLetters) {
+    case 4:
+      return FOUR_LETTER_WORDS[baseIndex % FOUR_LETTER_WORDS.length];
+    case 5:
+      return FIVE_LETTER_WORDS[baseIndex % FIVE_LETTER_WORDS.length];
+    case 6:
+      return SIX_LETTER_WORDS[baseIndex % SIX_LETTER_WORDS.length];
+  }
+};
+
+/**
+ * check if guess is a real word
+ * @param { array of objects } guess
+ * @returns if guess is a real word
+ */
+export const isRealWord = (guess) => {
+  const numLetters = guess.length;
+  const word = guess.map((tile) => tile.letter).join('');
+  switch (numLetters) {
+    case 4:
+      return FOUR_LETTER_WORDS.includes(word);
+    case 5:
+      return FIVE_LETTER_WORDS.includes(word);
+    case 6:
+      return SIX_LETTER_WORDS.includes(word);
+  }
 };

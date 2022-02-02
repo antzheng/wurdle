@@ -3,7 +3,12 @@
   import GameBoard from './components/GameBoard.svelte';
   import Keyboard from './components/Keyboard.svelte';
   import { NUM_ROWS } from './resources/constants.js';
-  import { validateGuess, isGuessCorrect } from './resources/utils.js';
+  import {
+    validateGuess,
+    isGuessCorrect,
+    isRealWord,
+    getDailyPuzzle,
+  } from './resources/utils.js';
 
   // state
   let isDarkMode = false;
@@ -13,13 +18,14 @@
   let board = [...Array(NUM_ROWS)].map(() => []);
   let currentGuess = 0;
   let guessedLetters = {};
-  let solution = 'those';
+  let solution = getDailyPuzzle(numLetters);
 
   // side effects
   $: document.body.classList.toggle('darkmode', isDarkMode);
   $: document.body.classList.toggle('highcontrast', isHighContrast);
   $: numLetters, (board = [...Array(NUM_ROWS)].map(() => []));
   $: isGameOver = isGameOver || currentGuess >= NUM_ROWS;
+  $: solution = getDailyPuzzle(numLetters);
 
   // handlers
   const addLetter = (letter) => {
@@ -38,8 +44,9 @@
 
   const submitGuess = () => {
     if (isGameOver) return;
-    if (board[currentGuess].length < numLetters) return;
     const guess = board[currentGuess];
+    if (guess.length < numLetters) return;
+    if (!isRealWord(guess)) return;
     validateGuess(guess, solution, guessedLetters);
     currentGuess += 1;
     board = board;
