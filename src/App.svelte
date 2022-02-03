@@ -25,11 +25,16 @@
   // side effects
   $: document.body.classList.toggle('darkmode', isDarkMode);
   $: document.body.classList.toggle('highcontrast', isHighContrast);
-  $: numLetters, (board = [...Array(NUM_ROWS)].map(() => []));
-  $: isGameOver = isGameOver || currentGuess >= NUM_ROWS;
-  $: solution = getDailyPuzzle(numLetters);
+  $: {
+    board = [...Array(NUM_ROWS)].map(() => []);
+    currentGuess = 0;
+    guessedLetters = {};
+    isGameOver = false;
+    solution = getDailyPuzzle(numLetters);
+  }
   $: if (currentGuess >= NUM_ROWS) {
-    ToastController.push(solution.toUpperCase(), { duration: 3000 });
+    isGameOver = true;
+    ToastController.push(solution.toUpperCase(), { duration: 2000 });
   }
 
   // handlers
@@ -62,7 +67,11 @@
     currentGuess += 1;
     board = board;
     guessedLetters = guessedLetters;
-    if (isGuessCorrect(guess, solution)) isGameOver = true;
+    if (isGuessCorrect(guess, solution)) {
+      isGameOver = true;
+      ToastController.push('Genius', { duration: 2000 });
+      // TODO: BRING UP THE LEADERBOARD MODAL
+    }
   };
 </script>
 
@@ -72,7 +81,26 @@
   <Keyboard {addLetter} {removeLetter} {submitGuess} {guessedLetters} />
 </div>
 <Toast />
-<Modal />
+<Modal
+  darkMode={[
+    isDarkMode,
+    (state) => {
+      isDarkMode = state;
+    },
+  ]}
+  contrastMode={[
+    isHighContrast,
+    (state) => {
+      isHighContrast = state;
+    },
+  ]}
+  gameMode={[
+    numLetters,
+    (state) => {
+      numLetters = state;
+    },
+  ]}
+/>
 
 <style lang="scss">
   #game {

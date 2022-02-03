@@ -103,6 +103,16 @@ export const getDailyPuzzle = (numLetters) => {
 };
 
 /**
+ * get random word from word bank
+ * @param { number } numLetters
+ * @returns random word from word bank
+ */
+export const getRandomWord = (numLetters) => {
+  const [wordBank] = mapping[numLetters];
+  return wordBank[Math.floor(Math.random() * wordBank.length)];
+};
+
+/**
  * check if guess is a real word
  * @param { array of objects } guess
  * @returns if guess is a real word

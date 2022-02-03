@@ -1,15 +1,22 @@
 <script>
   import CloseIcon from 'svelte-icons/io/IoMdClose.svelte';
   import * as ModalController from './../Generic/Modal.svelte';
+  import { getRandomWord } from './../../resources/utils';
 
-  const correctIndex = 0;
-  const correctWord = [...'party'];
+  export let gameMode;
 
-  const presentIndex = 1;
-  const presentWord = [...'react'];
+  const [numLetters] = gameMode;
 
-  const absentIndex = 3;
-  const absentWord = [...'irate'];
+  const words = [];
+  while (words.length < 3) {
+    const randomWord = getRandomWord(numLetters);
+    if (!words.includes(randomWord)) words.push(randomWord);
+  }
+
+  const [correctWord, presentWord, absentWord] = words.map((word) => [...word]);
+  const [correctIndex, presentIndex, absentIndex] = [...Array(3)].map(() =>
+    Math.floor(Math.random() * numLetters)
+  );
 
   const correctExample = {
     message: `The letter <b>${correctWord[correctIndex]}</b> is in the word and in the correct spot.`,

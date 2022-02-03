@@ -4,6 +4,7 @@
   import SettingsIcon from 'svelte-icons/io/IoMdSettings.svelte';
 
   import HowTo from './../Informational/HowTo.svelte';
+  import Settings from './../Informational/Settings.svelte';
   import { PAGES } from './../../resources/constants';
 
   import * as ModalController from './Modal.svelte';
@@ -17,6 +18,7 @@
       case PAGES.LEADERBOARD:
         break;
       case PAGES.SETTINGS:
+        ModalController.setContent(Settings);
         break;
     }
   };

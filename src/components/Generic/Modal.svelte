@@ -14,6 +14,8 @@
   import { fly } from 'svelte/transition';
   import { ModalStore } from './../../resources/stores';
 
+  export let darkMode, contrastMode, gameMode;
+
   const { isOpen, content } = ModalStore;
 
   const handleKeydown = (event) => {
@@ -36,7 +38,7 @@
       on:click|stopPropagation
       transition:fly={{ y: 500, duration: 200 }}
     >
-      <svelte:component this={$content} />
+      <svelte:component this={$content} {darkMode} {contrastMode} {gameMode} />
     </div>
   </div>
 {/if}
