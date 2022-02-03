@@ -1,4 +1,7 @@
 /node_modules/
-/public/build/
 
+# macOS
 .DS_Store
+
+# node script to deploy page
+gh-pages.js
