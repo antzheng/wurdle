@@ -1,4 +1,6 @@
 <script>
+  import { onMount } from 'svelte';
+
   import HelpIcon from 'svelte-icons/io/IoMdHelpCircle.svelte';
   import StatsIcon from 'svelte-icons/io/IoMdStats.svelte';
   import SettingsIcon from 'svelte-icons/io/IoMdSettings.svelte';
@@ -22,6 +24,10 @@
         break;
     }
   };
+
+  onMount(() => {
+    handleClick(PAGES.HOWTO);
+  });
 </script>
 
 <header class="navbar">
