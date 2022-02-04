@@ -22,6 +22,16 @@
   let guessedLetters = {};
   let solution = getDailyPuzzle(numLetters);
 
+  // setters
+  const setDarkMode = (state) => (isDarkMode = state);
+  const setHighContrast = (state) => (isHighContrast = state);
+  const setNumLetters = (state) => (numLetters = state);
+
+  // derived values
+  $: darkMode = [isDarkMode, setDarkMode];
+  $: contrastMode = [isHighContrast, setHighContrast];
+  $: gameMode = [numLetters, setNumLetters];
+
   // side effects
   $: document.body.classList.toggle('darkmode', isDarkMode);
   $: document.body.classList.toggle('highcontrast', isHighContrast);
@@ -64,13 +74,14 @@
       return;
     }
     validateGuess(guess, solution, guessedLetters);
-    currentGuess += 1;
     board = board;
     guessedLetters = guessedLetters;
     if (isGuessCorrect(guess, solution)) {
       isGameOver = true;
       ToastController.push('Genius', { duration: 2000 });
       // TODO: BRING UP THE LEADERBOARD MODAL
+    } else {
+      currentGuess += 1;
     }
   };
 </script>
@@ -81,26 +92,7 @@
   <Keyboard {addLetter} {removeLetter} {submitGuess} {guessedLetters} />
 </div>
 <Toast />
-<Modal
-  darkMode={[
-    isDarkMode,
-    (state) => {
-      isDarkMode = state;
-    },
-  ]}
-  contrastMode={[
-    isHighContrast,
-    (state) => {
-      isHighContrast = state;
-    },
-  ]}
-  gameMode={[
-    numLetters,
-    (state) => {
-      numLetters = state;
-    },
-  ]}
-/>
+<Modal {darkMode} {contrastMode} {gameMode} />
 
 <style lang="scss">
   #game {

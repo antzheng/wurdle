@@ -99,4 +99,11 @@
     padding: 3px;
     margin: 0 3px;
   }
+
+  @media (max-width: 360px) {
+    .title {
+      font-size: 22px;
+      letter-spacing: 0.1rem;
+    }
+  }
 </style>

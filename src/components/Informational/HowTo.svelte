@@ -120,18 +120,16 @@
 
   .row {
     display: flex;
-    width: 100%;
-    align-items: center;
   }
 
   .tile {
+    flex: 1;
+    max-width: 40px;
     margin-right: 5px;
-    width: 10%;
-    min-width: 40px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    font-size: 2rem;
+    font-size: 1.5rem;
     line-height: 2rem;
     font-weight: bold;
     vertical-align: middle;
@@ -139,7 +137,12 @@
     color: var(--tile-text-color);
     text-transform: uppercase;
     user-select: none;
-    aspect-ratio: 1 / 1;
+  }
+
+  .tile::before {
+    content: '';
+    display: inline-block;
+    padding-bottom: 100%;
   }
 
   .tile[data-state='empty'] {
@@ -162,5 +165,19 @@
 
   .tile[data-state='correct'] {
     background-color: var(--color-correct);
+  }
+
+  @media (max-height: 600px) {
+    .tile {
+      font-size: 1em;
+      line-height: 1em;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .tile {
+      font-size: 1em;
+      line-height: 1em;
+    }
   }
 </style>

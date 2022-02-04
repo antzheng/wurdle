@@ -41,7 +41,7 @@
       <label class="switch">
         <input
           type="checkbox"
-          value={isDarkMode}
+          checked={isDarkMode}
           on:change={() => setDarkMode(!isDarkMode)}
         />
         <span class="slider" />
@@ -55,7 +55,7 @@
       <label class="switch">
         <input
           type="checkbox"
-          value={isHighContrast}
+          checked={isHighContrast}
           on:change={() => setHighContrast(!isHighContrast)}
         />
         <span class="slider" />

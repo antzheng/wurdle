@@ -1,12 +1,59 @@
 <script>
+  import { onMount } from 'svelte';
+
   export let numLetters, board;
+
+  let containerElement;
+  let boardElement;
+
+  $: numLetters, handleResize();
+
+  const handleResize = () => {
+    if (!containerElement || !boardElement) return;
+
+    // figure out aspect ratio
+    const aspectRatio = numLetters / 6;
+
+    // specify max height
+    const maxHeight = 420;
+
+    // now try to make board aspect ratio with 100% height
+    const containerHeight = parseInt(
+      window.getComputedStyle(containerElement).height
+    );
+    const containerWidth = parseInt(
+      window.getComputedStyle(containerElement).width
+    );
+    let height = Math.min(containerHeight, maxHeight);
+    let width = aspectRatio * height;
+
+    // fix if width exceeds maxWidth
+    if (width > containerWidth) {
+      width = 0.9 * containerWidth;
+      height = width / aspectRatio;
+    }
+
+    // round to whole pixels
+    width = Math.round(width);
+    height = Math.round(height);
+
+    // set up the properties
+    boardElement.style.width = `${width}px`;
+    boardElement.style.height = `${height}px`;
+  };
+
+  onMount(() => {
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  });
 </script>
 
-<div class="container">
+<div class="container" bind:this={containerElement}>
   <div
     class="game-board"
-    class:square={numLetters === 6}
     style="--columns:{numLetters}"
+    bind:this={boardElement}
   >
     {#each board as row}
       <div class="row">
@@ -44,16 +91,6 @@
     grid-gap: 5px;
     padding: 10px;
     box-sizing: border-box;
-
-    max-width: calc(var(--columns) * 70px);
-    max-height: 420px;
-
-    height: 100%;
-    aspect-ratio: var(--columns) / 6;
-  }
-
-  .square {
-    height: min(100%, 90vmin);
   }
 
   .row {
@@ -77,6 +114,12 @@
     user-select: none;
   }
 
+  .tile::before {
+    content: '';
+    display: inline-block;
+    padding-bottom: 100%;
+  }
+
   .tile[data-state='empty'] {
     border: 2px solid var(--color-tone-4);
   }
@@ -97,5 +140,19 @@
 
   .tile[data-state='correct'] {
     background-color: var(--color-correct);
+  }
+
+  @media (max-height: 600px) {
+    .tile {
+      font-size: 1em;
+      line-height: 1em;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .tile {
+      font-size: 1em;
+      line-height: 1em;
+    }
   }
 </style>
