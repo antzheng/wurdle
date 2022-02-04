@@ -162,7 +162,7 @@
 
   .radio-group label {
     z-index: 1;
-    font-size: 1rem;
+    font-size: 1.1rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -172,11 +172,11 @@
     overflow: hidden;
     color: var(--key-text-color);
     transition: 0.2s;
+    font-weight: bold;
   }
 
   .radio-group input[type='radio']:checked + label {
     color: var(--tile-text-color);
-    font-weight: bold;
   }
 
   .switch {
@@ -204,7 +204,7 @@
     border-radius: 34px;
   }
 
-  .slider:before {
+  .slider::before {
     position: absolute;
     content: '';
     height: 26px;
@@ -221,7 +221,7 @@
     background-color: var(--color-correct);
   }
 
-  input:checked + .slider:before {
+  input:checked + .slider::before {
     transform: translate(27px, -50%);
   }
 </style>

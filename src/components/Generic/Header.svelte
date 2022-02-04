@@ -6,6 +6,7 @@
   import SettingsIcon from 'svelte-icons/io/IoMdSettings.svelte';
 
   import HowTo from './../Informational/HowTo.svelte';
+  import Leaderboard from './../Informational/Leaderboard.svelte';
   import Settings from './../Informational/Settings.svelte';
   import { PAGES } from './../../resources/constants';
 
@@ -18,6 +19,7 @@
         ModalController.setContent(HowTo);
         break;
       case PAGES.LEADERBOARD:
+        ModalController.setContent(Leaderboard);
         break;
       case PAGES.SETTINGS:
         ModalController.setContent(Settings);

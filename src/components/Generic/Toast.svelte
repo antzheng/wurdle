@@ -10,7 +10,7 @@
     initial: 1, // initial progress bar value
     next: 0, // next progress value
     pausable: false, // pause progress bar tween on mouse hover
-    dismissable: true, // allow dismiss with close button
+    dismissable: false, // allow dismiss with close button
     reversed: false, // insert new toast to bottom of stack
     intro: { y: -1000 }, // toast intro fly animation settings
   };
@@ -28,5 +28,10 @@
 
   :global(._toastMsg) {
     font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-right: 10px;
   }
 </style>

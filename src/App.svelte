@@ -13,7 +13,7 @@
   } from './resources/utils.js';
 
   // state
-  let isDarkMode = false;
+  let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
   let isHighContrast = false;
   let isGameOver = false;
   let numLetters = 5;

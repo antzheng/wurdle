@@ -2,10 +2,35 @@ import { FOUR_LETTER_WORD_BANK, VALID_FOUR_LETTER_WORDS } from './4-letters';
 import { FIVE_LETTER_WORD_BANK, VALID_FIVE_LETTER_WORDS } from './5-letters';
 import { SIX_LETTER_WORD_BANK, VALID_SIX_LETTER_WORDS } from './6-letters';
 
-const mapping = {
+const MAPPING = {
   4: [FOUR_LETTER_WORD_BANK, VALID_FOUR_LETTER_WORDS],
   5: [FIVE_LETTER_WORD_BANK, VALID_FIVE_LETTER_WORDS],
   6: [SIX_LETTER_WORD_BANK, VALID_SIX_LETTER_WORDS],
+};
+
+const GAME_DATE = new Date();
+
+/**
+ * gets today's date in Eastern Time
+ * @returns returns array of numbers [month, day, year] in Eastern Time
+ */
+const getMonthDayYearEST = () => {
+  return GAME_DATE.toLocaleDateString('en-US', { timeZone: 'America/New_York' })
+    .split('/')
+    .map((num) => parseInt(num));
+};
+
+/**
+ * gets today's time in Eastern Time
+ * @returns returns array of numbers [hour, minute, second] in Eastern Time
+ */
+const getHourMinuteSecondEST = () => {
+  const [time, timeOfDay] = GAME_DATE.toLocaleTimeString('en-US', {
+    timeZone: 'America/New_York',
+  }).split(' ');
+  let [hour, minute, second] = time.split(':').map((num) => parseInt(num));
+  if (timeOfDay === 'PM') hour += 12;
+  return [hour, minute, second];
 };
 
 /**
@@ -67,30 +92,6 @@ export const validateGuess = (guess, solution, guessedLetters) => {
 };
 
 /**
- * gets today's date in Eastern Time
- * @returns returns array of numbers [month, day, year] in Eastern Time
- */
-const getMonthDayYearEST = () => {
-  return new Date()
-    .toLocaleDateString('en-US', { timeZone: 'America/New_York' })
-    .split('/')
-    .map((num) => parseInt(num));
-};
-
-/**
- * gets today's time in Eastern Time
- * @returns returns array of numbers [hour, minute, second] in Eastern Time
- */
-const getHourMinuteSecondEST = () => {
-  const [time, timeOfDay] = new Date()
-    .toLocaleTimeString('en-US', { timeZone: 'America/New_York' })
-    .split(' ');
-  let [hour, minute, second] = time.split(':').map((num) => parseInt(num));
-  if (timeOfDay === 'PM') hour += 12;
-  return [hour, minute, second];
-};
-
-/**
  * gets daily puzzle based on desired number of letters
  * @param { number } numLetters
  * @returns daily puzzle
@@ -98,7 +99,7 @@ const getHourMinuteSecondEST = () => {
 export const getDailyPuzzle = (numLetters) => {
   const [month, day, year] = getMonthDayYearEST();
   const baseIndex = year * 365 + month * 31 + day;
-  const [wordBank] = mapping[numLetters];
+  const [wordBank] = MAPPING[numLetters];
   return wordBank[baseIndex % wordBank.length];
 };
 
@@ -108,7 +109,7 @@ export const getDailyPuzzle = (numLetters) => {
  * @returns random word from word bank
  */
 export const getRandomWord = (numLetters) => {
-  const [wordBank] = mapping[numLetters];
+  const [wordBank] = MAPPING[numLetters];
   return wordBank[Math.floor(Math.random() * wordBank.length)];
 };
 
@@ -120,6 +121,37 @@ export const getRandomWord = (numLetters) => {
 export const isRealWord = (guess) => {
   const numLetters = guess.length;
   const word = guess.map((tile) => tile.letter).join('');
-  const [wordBank, validWords] = mapping[numLetters];
+  const [wordBank, validWords] = MAPPING[numLetters];
   return wordBank.includes(word) || validWords.includes(word);
 };
+
+/**
+LOCAL STORAGE GUIDE:
+{
+  GAME_DATE: 'MM/DD/YYYY',
+  FOUR_DATA: {
+    BOARD: board array of arrays of objects
+    MAX_STREAK: number,
+    STREAK: number,
+    DISTRIBUTION: [number] * 6,
+    SHOW_SHARE: boolean,
+  },
+  FIVE_DATA: {
+    BOARD: board array of arrays of objects
+    MAX_STREAK: number,
+    STREAK: number,
+    DISTRIBUTION: [number] * 6,
+    SHOW_SHARE: boolean,
+  },
+  SIX_DATA: {
+    BOARD: board array of arrays of objects
+    MAX_STREAK: number,
+    STREAK: number,
+    DISTRIBUTION: [number] * 6,
+    SHOW_SHARE: boolean,
+  },
+  GAME_MODE: number (4, 5, 6),
+  DARK_MODE: boolean,
+  HIGH_CONTRAST: boolean,
+}
+*/

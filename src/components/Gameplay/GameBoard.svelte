@@ -28,8 +28,9 @@
     let width = aspectRatio * height;
 
     // fix if width exceeds maxWidth
-    if (width > containerWidth) {
-      width = 0.9 * containerWidth;
+    const maxWidth = 0.9 * containerWidth;
+    if (width > maxWidth) {
+      width = maxWidth;
       height = width / aspectRatio;
     }
 
