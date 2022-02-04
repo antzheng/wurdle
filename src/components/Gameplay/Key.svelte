@@ -1,12 +1,15 @@
 <script>
   import BackspaceIcon from 'svelte-icons/io/IoMdBackspace.svelte';
 
-  export let char, addLetter, removeLetter, submitGuess, guessedLetters;
+  // props
+  export let char, addLetter, removeLetter, submitGuess, keyboardState;
 
+  // derived values
   $: isSpecialChar = '↵←'.includes(char);
   $: renderedChar = char === '↵' ? 'enter' : char;
-  $: state = guessedLetters[char];
+  $: state = keyboardState[char];
 
+  // handlers
   const handleClick = (char) => {
     switch (char) {
       case '↵':

@@ -1,45 +1,55 @@
 <script>
   import CloseIcon from 'svelte-icons/io/IoMdClose.svelte';
   import * as ModalController from './../Generic/Modal.svelte';
-  import { getRandomWord } from './../../resources/utils';
+  import * as utils from './../../resources/utils';
 
+  // props
   export let gameMode;
 
-  const [numLetters] = gameMode;
+  // derived values
+  $: [numLetters] = gameMode;
+  $: [correctExample, presentExample, absentExample] = getExamples(numLetters);
 
-  const words = [];
-  while (words.length < 3) {
-    const randomWord = getRandomWord(numLetters);
-    if (!words.includes(randomWord)) words.push(randomWord);
-  }
+  // handlers
+  const getExamples = (numLetters) => {
+    const words = [];
+    while (words.length < 3) {
+      const randomWord = utils.getRandomWord(numLetters);
+      if (!words.includes(randomWord)) words.push(randomWord);
+    }
 
-  const [correctWord, presentWord, absentWord] = words.map((word) => [...word]);
-  const [correctIndex, presentIndex, absentIndex] = [...Array(3)].map(() =>
-    Math.floor(Math.random() * numLetters)
-  );
+    const [correctWord, presentWord, absentWord] = words.map((word) => [
+      ...word,
+    ]);
+    const [correctIndex, presentIndex, absentIndex] = [...Array(3)].map(() =>
+      Math.floor(Math.random() * numLetters)
+    );
 
-  const correctExample = {
-    message: `The letter <b>${correctWord[correctIndex]}</b> is in the word and in the correct spot.`,
-    example: correctWord.map((letter, i) => ({
-      letter,
-      state: i === correctIndex ? 'correct' : 'tbd',
-    })),
-  };
+    const correctExample = {
+      message: `The letter <b>${correctWord[correctIndex]}</b> is in the word and in the correct spot.`,
+      example: correctWord.map((letter, i) => ({
+        letter,
+        state: i === correctIndex ? 'correct' : 'tbd',
+      })),
+    };
 
-  const presentExample = {
-    message: `The letter <b>${presentWord[presentIndex]}</b> is in the word but in the wrong spot.`,
-    example: presentWord.map((letter, i) => ({
-      letter,
-      state: i === presentIndex ? 'present' : 'tbd',
-    })),
-  };
+    const presentExample = {
+      message: `The letter <b>${presentWord[presentIndex]}</b> is in the word but in the wrong spot.`,
+      example: presentWord.map((letter, i) => ({
+        letter,
+        state: i === presentIndex ? 'present' : 'tbd',
+      })),
+    };
 
-  const absentExample = {
-    message: `The letter <b>${absentWord[absentIndex]}</b> is not in the word in any spot.`,
-    example: absentWord.map((letter, i) => ({
-      letter,
-      state: i === absentIndex ? 'absent' : 'tbd',
-    })),
+    const absentExample = {
+      message: `The letter <b>${absentWord[absentIndex]}</b> is not in the word in any spot.`,
+      example: absentWord.map((letter, i) => ({
+        letter,
+        state: i === absentIndex ? 'absent' : 'tbd',
+      })),
+    };
+
+    return [correctExample, presentExample, absentExample];
   };
 </script>
 
@@ -56,10 +66,10 @@
   </p>
 
   <p>
-    Play in <span class="four-letter">4-letter,</span>
-    <span class="five-letter">5-letter,</span>
+    Play in <span>4-letter,</span>
+    <span>5-letter,</span>
     and
-    <span class="six-letter">6-letter</span>
+    <span>6-letter</span>
     modes.
   </p>
 

@@ -1,10 +1,17 @@
 <script>
   import Key from './Key.svelte';
+  import * as utils from './../../resources/utils.js';
 
+  // props
+  export let addLetter, removeLetter, submitGuess, board, solution;
+
+  // derived values
+  $: keyboardState = utils.getKeyboardState(board, solution);
+
+  // constants
   const rows = ['qwertyuiop', 'asdfghjkl', '↵zxcvbnm←'];
 
-  export let addLetter, removeLetter, submitGuess, guessedLetters;
-
+  // handlers
   const handleKeydown = (event) => {
     if (event.repeat) return;
     const key = event.key;
@@ -40,7 +47,7 @@
             {addLetter}
             {removeLetter}
             {submitGuess}
-            {guessedLetters}
+            {keyboardState}
           />
         {/each}
 

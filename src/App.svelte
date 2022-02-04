@@ -4,23 +4,18 @@
   import Keyboard from './components/Gameplay/Keyboard.svelte';
   import Toast, { ToastController } from './components/Generic/Toast.svelte';
   import Modal from './components/Generic/Modal.svelte';
-  import { NUM_ROWS } from './resources/constants.js';
-  import {
-    validateGuess,
-    isGuessCorrect,
-    isRealWord,
-    getDailyPuzzle,
-  } from './resources/utils.js';
+  import * as utils from './resources/utils.js';
 
   // state
-  let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  // settings
+  let isDarkMode = false;
   let isHighContrast = false;
-  let isGameOver = false;
   let numLetters = 5;
-  let board = [...Array(NUM_ROWS)].map(() => []);
-  let currentGuess = 0;
-  let guessedLetters = {};
-  let solution = getDailyPuzzle(numLetters);
+
+  // game play
+  let board = [];
+  let currentGuess = '';
+  let solution = utils.getDailyPuzzle(numLetters);
 
   // setters
   const setDarkMode = (state) => (isDarkMode = state);
@@ -36,60 +31,57 @@
   $: document.body.classList.toggle('darkmode', isDarkMode);
   $: document.body.classList.toggle('highcontrast', isHighContrast);
   $: {
-    board = [...Array(NUM_ROWS)].map(() => []);
-    currentGuess = 0;
-    guessedLetters = {};
-    isGameOver = false;
-    solution = getDailyPuzzle(numLetters);
-  }
-  $: if (currentGuess >= NUM_ROWS) {
-    isGameOver = true;
-    ToastController.push(solution.toUpperCase(), { duration: 2000 });
+    board = [];
+    currentGuess = '';
+    solution = utils.getDailyPuzzle(numLetters);
   }
 
   // handlers
   const addLetter = (letter) => {
-    if (isGameOver) return;
-    if (board[currentGuess].length >= numLetters) return;
-    board[currentGuess].push({ letter, state: 'tbd' });
-    board = board;
+    if (utils.isGameOver(board, solution)) return;
+    if (currentGuess.length >= numLetters) return;
+    currentGuess += letter;
   };
 
   const removeLetter = () => {
-    if (isGameOver) return;
-    if (board[currentGuess].length === 0) return;
-    board[currentGuess].pop();
-    board = board;
+    if (utils.isGameOver(board, solution)) return;
+    if (currentGuess.length === 0) return;
+    currentGuess = currentGuess.slice(0, -1);
   };
 
   const submitGuess = () => {
-    if (isGameOver) return;
-    const guess = board[currentGuess];
-    if (guess.length < numLetters) {
+    if (utils.isGameOver(board, solution)) return;
+
+    // too few letters
+    if (currentGuess.length < numLetters) {
       ToastController.push('Not enough letters!');
       return;
     }
-    if (!isRealWord(guess)) {
+
+    // isn't in word list
+    if (!utils.isRealWord(currentGuess)) {
       ToastController.push('Not in word list!');
       return;
     }
-    validateGuess(guess, solution, guessedLetters);
-    board = board;
-    guessedLetters = guessedLetters;
-    if (isGuessCorrect(guess, solution)) {
-      isGameOver = true;
+
+    // valid word, add to board
+    board = [...board, currentGuess];
+    currentGuess = '';
+
+    // check if game is over
+    if (utils.isWin(board, solution)) {
       ToastController.push('Genius', { duration: 2000 });
       // TODO: BRING UP THE LEADERBOARD MODAL
-    } else {
-      currentGuess += 1;
+    } else if (utils.isLoss(board)) {
+      ToastController.push(solution.toUpperCase(), { duration: 2000 });
     }
   };
 </script>
 
 <div id="game">
   <Header />
-  <GameBoard {numLetters} {board} />
-  <Keyboard {addLetter} {removeLetter} {submitGuess} {guessedLetters} />
+  <GameBoard {numLetters} {board} {currentGuess} {solution} />
+  <Keyboard {addLetter} {removeLetter} {submitGuess} {board} {solution} />
 </div>
 <Toast />
 <Modal {darkMode} {contrastMode} {gameMode} />

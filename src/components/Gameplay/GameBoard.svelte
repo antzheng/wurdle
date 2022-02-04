@@ -1,13 +1,18 @@
 <script>
   import { onMount } from 'svelte';
+  import * as utils from './../../resources/utils.js';
 
-  export let numLetters, board;
+  // props
+  export let numLetters, board, currentGuess, solution;
 
-  let containerElement;
-  let boardElement;
+  // refs
+  let containerElement, boardElement;
 
+  // derived values and side effects
+  $: renderedBoard = utils.getRenderedBoard(board, currentGuess, solution);
   $: numLetters, handleResize();
 
+  // handlers
   const handleResize = () => {
     if (!containerElement || !boardElement) return;
 
@@ -43,6 +48,7 @@
     boardElement.style.height = `${height}px`;
   };
 
+  // lifecycle
   onMount(() => {
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -56,7 +62,7 @@
     style="--columns:{numLetters}"
     bind:this={boardElement}
   >
-    {#each board as row}
+    {#each renderedBoard as row}
       <div class="row">
         {#each row as tile}
           <div class="tile" data-state={tile.state}>
@@ -65,6 +71,14 @@
         {/each}
 
         {#each [...Array(numLetters - row.length)] as _}
+          <div class="tile" data-state="empty" />
+        {/each}
+      </div>
+    {/each}
+
+    {#each [...Array(Math.max(0, 5 - board.length))] as _}
+      <div class="row">
+        {#each [...Array(numLetters)] as _}
           <div class="tile" data-state="empty" />
         {/each}
       </div>

@@ -34,22 +34,40 @@ const getHourMinuteSecondEST = () => {
 };
 
 /**
- * return whether the guess is the answer
- * @param { array of objects } guess
+ * return if user has won the game
+ * @param { array of strings } board
  * @param { string } solution
- * @returns whether the guess is the answer
+ * @returns if user has won the game
  */
-export const isGuessCorrect = (guess, solution) => {
-  return guess.map((tile) => tile.letter).join('') === solution;
+export const isWin = (board, solution) => {
+  return board[board.length - 1] === solution;
 };
 
 /**
- * marks the board and the keyboard based on a guess
- * @param { array of objects } guess
- * @param { string } solution
- * @param { object of letters -> states } guessedLetters
+ * returns if user has lost the game
+ * @param { array of strings } board
+ * @returns if user has lost the game
  */
-export const validateGuess = (guess, solution, guessedLetters) => {
+export const isLoss = (board) => {
+  return board.length >= 6;
+};
+
+/**
+ * returns if the game has ended
+ * @param { array of strings} board
+ * @param { string } solution
+ * @returns if the game is over (win or loss)
+ */
+export const isGameOver = (board, solution) => {
+  return isWin(board, solution) || isLoss(board);
+};
+
+/**
+ * sets the state for each letter of the rendered board
+ * @param { list of objects containing { state, letter } } word
+ * @param { solution } solution
+ */
+const validateWord = (word, solution) => {
   // fill in frequency map
   const freq = {};
   for (const letter of solution) {
@@ -58,37 +76,83 @@ export const validateGuess = (guess, solution, guessedLetters) => {
   }
 
   // place correct guesses
-  guess.forEach((tile, i) => {
+  word.forEach((tile, i) => {
     if (tile.letter === solution[i]) {
       tile.state = 'correct';
       freq[tile.letter] -= 1;
-
-      // mark the keyboard
-      guessedLetters[tile.letter] = 'correct';
     } else {
       tile.state = 'absent';
-
-      // mark the keyboard as absent if not correct or present
-      const state = guessedLetters[tile.letter];
-      if (state !== 'correct' && state !== 'present') {
-        guessedLetters[tile.letter] = 'absent';
-      }
     }
   });
 
   // find misplaced letters
-  guess.forEach((tile) => {
+  word.forEach((tile) => {
     if (tile.state === 'absent' && freq[tile.letter] > 0) {
       tile.state = 'present';
       freq[tile.letter] -= 1;
-
-      // mark the keyboard as present if not correct
-      const state = guessedLetters[tile.letter];
-      if (state !== 'correct') {
-        guessedLetters[tile.letter] = 'present';
-      }
     }
   });
+};
+
+/**
+ * sets up the rendered board
+ * @param { array of strings } board
+ * @param { string } currentGuess
+ * @param { string } solution
+ * @returns an array of data used to render the game board
+ */
+export const getRenderedBoard = (board, currentGuess, solution) => {
+  // rendered board contains previous guesses + current guess
+  const rendered = [...board, currentGuess].map((row) =>
+    [...row].map((letter) => ({ letter, state: 'tbd' }))
+  );
+
+  // rendered board must validate previous guesses
+  for (let i = 0; i < board.length; i++) {
+    validateWord(rendered[i], solution);
+  }
+
+  // rendered board cannot exceed 6 rows
+  return rendered.slice(0, 6);
+};
+
+/**
+ * sets up the keyboard state
+ * @param { array of strings } board
+ * @param { strings } solution
+ * @returns an object representing the states of each character on the keyboard
+ */
+export const getKeyboardState = (board, solution) => {
+  const state = {};
+
+  // get all absent letters
+  board.forEach((word) => {
+    [...word].forEach((letter) => {
+      if (!solution.includes(letter)) {
+        state[letter] = 'absent';
+      }
+    });
+  });
+
+  // get all present letters
+  board.forEach((word) => {
+    [...word].forEach((letter, i) => {
+      if (solution.includes(letter) && solution[i] !== letter) {
+        state[letter] = 'present';
+      }
+    });
+  });
+
+  // get all correct letters
+  board.forEach((word) => {
+    [...word].forEach((letter, i) => {
+      if (solution[i] === letter) {
+        state[letter] = 'correct';
+      }
+    });
+  });
+
+  return state;
 };
 
 /**
@@ -115,43 +179,39 @@ export const getRandomWord = (numLetters) => {
 
 /**
  * check if guess is a real word
- * @param { array of objects } guess
+ * @param { string } guess
  * @returns if guess is a real word
  */
 export const isRealWord = (guess) => {
   const numLetters = guess.length;
-  const word = guess.map((tile) => tile.letter).join('');
   const [wordBank, validWords] = MAPPING[numLetters];
-  return wordBank.includes(word) || validWords.includes(word);
+  return wordBank.includes(guess) || validWords.includes(guess);
 };
 
 /**
 LOCAL STORAGE GUIDE:
 {
-  GAME_DATE: 'MM/DD/YYYY',
-  FOUR_DATA: {
-    BOARD: board array of arrays of objects
-    MAX_STREAK: number,
-    STREAK: number,
-    DISTRIBUTION: [number] * 6,
-    SHOW_SHARE: boolean,
+  gameDate: 'MM/DD/YYYY',
+  gameMode: number (4, 5, 6),
+  isDarkMode: boolean,
+  isHighContrast: boolean,
+  fourMode: {
+    board: array of strings
+    maxStreak: number,
+    streak: number,
+    distribution: [number] * 7,
   },
-  FIVE_DATA: {
-    BOARD: board array of arrays of objects
-    MAX_STREAK: number,
-    STREAK: number,
-    DISTRIBUTION: [number] * 6,
-    SHOW_SHARE: boolean,
+  fiveMode: {
+    board: array of strings
+    maxStreak: number,
+    streak: number,
+    distribution: [number] * 7,
   },
-  SIX_DATA: {
-    BOARD: board array of arrays of objects
-    MAX_STREAK: number,
-    STREAK: number,
-    DISTRIBUTION: [number] * 6,
-    SHOW_SHARE: boolean,
+  sixMode: {
+    board: array of strings
+    maxStreak: number,
+    streak: number,
+    distribution: [number] * 7,
   },
-  GAME_MODE: number (4, 5, 6),
-  DARK_MODE: boolean,
-  HIGH_CONTRAST: boolean,
 }
 */
