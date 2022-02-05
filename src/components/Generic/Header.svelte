@@ -1,35 +1,13 @@
 <script>
-  import { onMount } from 'svelte';
-
   import HelpIcon from 'svelte-icons/io/IoMdHelpCircle.svelte';
   import StatsIcon from 'svelte-icons/io/IoMdStats.svelte';
   import SettingsIcon from 'svelte-icons/io/IoMdSettings.svelte';
-
-  import HowTo from './../Informational/HowTo.svelte';
-  import Leaderboard from './../Informational/Leaderboard.svelte';
-  import Settings from './../Informational/Settings.svelte';
+  import * as ModalController from './../../resources/modalController';
   import { PAGES } from './../../resources/constants';
 
-  import * as ModalController from './Modal.svelte';
-
   const handleClick = (page) => {
-    ModalController.setOpen(true);
-    switch (page) {
-      case PAGES.HOWTO:
-        ModalController.setContent(HowTo);
-        break;
-      case PAGES.LEADERBOARD:
-        ModalController.setContent(Leaderboard);
-        break;
-      case PAGES.SETTINGS:
-        ModalController.setContent(Settings);
-        break;
-    }
+    ModalController.openModalToPage(page);
   };
-
-  onMount(() => {
-    handleClick(PAGES.HOWTO);
-  });
 </script>
 
 <header class="navbar">
