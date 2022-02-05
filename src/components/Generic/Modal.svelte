@@ -11,13 +11,21 @@
 </script>
 
 <script>
+  import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import { ModalStore } from './../../resources/stores';
+  import * as utils from './../../resources/utils.js';
 
+  // props
   export let darkMode, contrastMode, gameMode;
 
+  // state
+  let currentTime = utils.getCurrentSecondsInTodayEST();
+
+  // store
   const { isOpen, content } = ModalStore;
 
+  // handlers
   const handleKeydown = (event) => {
     if (event.key !== 'Escape') return;
     if (!$isOpen) return;
@@ -27,6 +35,13 @@
   const handleClick = () => {
     isOpen.set(false);
   };
+
+  // lifecycle
+  onMount(() => {
+    const tick = () => (currentTime += 1);
+    setInterval(tick, 1000);
+    return () => clearInterval(tick);
+  });
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -38,7 +53,13 @@
       on:click|stopPropagation
       transition:fly={{ y: 500, duration: 200 }}
     >
-      <svelte:component this={$content} {darkMode} {contrastMode} {gameMode} />
+      <svelte:component
+        this={$content}
+        {darkMode}
+        {contrastMode}
+        {gameMode}
+        {currentTime}
+      />
     </div>
   </div>
 {/if}

@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
   import CloseIcon from 'svelte-icons/io/IoMdClose.svelte';
   import ShareIcon from 'svelte-icons/io/IoMdShare.svelte';
   import { ToastController } from './../Generic/Toast.svelte';
@@ -7,14 +6,12 @@
   import * as utils from './../../resources/utils';
 
   // props
-  export let gameMode;
-
-  // state
-  let currentTime = utils.getCurrentSecondsInTodayEST();
-  $: remainingTime = calculateRemainingTime(currentTime);
+  export let gameMode, currentTime;
 
   // derived values
   $: [numLetters] = gameMode;
+
+  $: remainingTime = calculateRemainingTime(currentTime);
 
   $: board = utils.getBoardFromStorage(numLetters);
   $: solution = utils.getDailyPuzzle(numLetters);
@@ -92,13 +89,6 @@
       }
     }
   };
-
-  // lifecycle
-  onMount(() => {
-    const tick = () => (currentTime += 1);
-    setInterval(tick, 1000);
-    return () => clearInterval(tick);
-  });
 </script>
 
 <div class="content">
