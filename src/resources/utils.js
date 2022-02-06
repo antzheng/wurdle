@@ -29,8 +29,7 @@ const getHourMinuteSecondEST = () => {
     timeZone: 'America/New_York',
   }).split(' ');
   let [hour, minute, second] = time.split(':').map((num) => parseInt(num));
-  if (timeOfDay === 'AM' && hour === 12) hour = 0;
-  if (timeOfDay === 'PM') hour += 12;
+  hour = (hour % 12) + (timeOfDay === 'PM' ? 12 : 0);
   return [hour, minute, second];
 };
 
